@@ -4,18 +4,16 @@
 ;(function () {
     'use strict';
 
-    let normalize = function (a) {
+    var normalize = function (a) {
         if (!_validate(a)) {
             throw new Error('Invalid address: ' + a);
         }
-        a = a.toLowerCase()
-        
-        let nh = a.split(/\:\:/g);
+        var nh = a.split(/\:\:/g);
         if (nh.length > 2) {
             throw new Error('Invalid address: ' + a);
         }
 
-        let sections = [];
+        var sections = [];
         if (nh.length == 1) {
             // full mode
             sections = a.split(/\:/g);
@@ -24,18 +22,18 @@
             }
         } else if (nh.length == 2) {
             // compact mode
-            let n = nh[0];
-            let h = nh[1];
-            let ns = n.split(/\:/g);
-            let hs = h.split(/\:/g);
-            for (let i in ns) {
+            var n = nh[0];
+            var h = nh[1];
+            var ns = n.split(/\:/g);
+            var hs = h.split(/\:/g);
+            for (var i in ns) {
                 sections[i] = ns[i];
             }
-            for (let i = hs.length; i > 0; --i) {
+            for (var i = hs.length; i > 0; --i) {
                 sections[7 - (hs.length - i)] = hs[i - 1];
             }
         }
-        for (let i = 0; i < 8; ++i) {
+        for (var i = 0; i < 8; ++i) {
             if (sections[i] === undefined) {
                 sections[i] = '0000';
             }
@@ -44,7 +42,7 @@
         return sections.join(':');
     };
 
-    let abbreviate = function (a) {
+    var abbreviate = function (a) {
         if (!_validate(a)) {
             throw new Error('Invalid address: ' + a);
         }
@@ -54,15 +52,15 @@
         a = a.replace(/\:00/g, ':');
         a = a.replace(/\:0/g, ':');
         a = a.replace(/g/g, '0');
-        let sections = a.split(/\:/g);
-        let zPreviousFlag = false;
-        let zeroStartIndex = -1;
-        let zeroLength = 0;
-        let zStartIndex = -1;
-        let zLength = 0;
-        for (let i = 0; i < 8; ++i) {
-            let section = sections[i];
-            let zFlag = (section === '0');
+        var sections = a.split(/\:/g);
+        var zPreviousFlag = false;
+        var zeroStartIndex = -1;
+        var zeroLength = 0;
+        var zStartIndex = -1;
+        var zLength = 0;
+        for (var i = 0; i < 8; ++i) {
+            var section = sections[i];
+            var zFlag = (section === '0');
             if (zFlag && !zPreviousFlag) {
                 zStartIndex = i;
             }
@@ -99,46 +97,49 @@
     };
 
     // Basic validation
-    let _validate = function (a) {
+    var _validate = function (a) {
         return /^[a-f0-9\\:]+$/ig.test(a);
     };
 
-    let _leftPad = function (d, p, n) {
-        let padding = p.repeat(n);
+    var _leftPad = function (d, p, n) {
+        var padding="";
+        for (var i = 0; i < n; i++) { 
+            padding+=p;
+         }
         if (d.length < padding.length) {
             d = padding.substring(0, padding.length - d.length) + d;
         }
         return d;
     };
 
-    let _hex2bin = function (hex) {
+    var _hex2bin = function (hex) {
         return parseInt(hex, 16).toString(2)
     };
-    let _bin2hex = function (bin) {
+    var _bin2hex = function (bin) {
         return parseInt(bin, 2).toString(16)
     };
 
-    let _addr2bin = function (addr) {
-        let nAddr = normalize(addr);
-        let sections = nAddr.split(":");
-        let binAddr = '';
-        for (let section of sections) {
+    var _addr2bin = function (addr) {
+        var nAddr = normalize(addr);
+        var sections = nAddr.split(":");
+        var binAddr = '';
+        for (var section in sections) {
             binAddr += _leftPad(_hex2bin(section), '0', 16);
         }
         return binAddr;
     };
 
-    let _bin2addr = function (bin) {
-        let addr = [];
-        for (let i = 0; i < 8; ++i) {
-            let binPart = bin.substr(i * 16, 16);
-            let hexSection = _leftPad(_bin2hex(binPart), '0', 4);
+    var _bin2addr = function (bin) {
+        var addr = [];
+        for (var i = 0; i < 8; ++i) {
+            var binPart = bin.substr(i * 16, 16);
+            var hexSection = _leftPad(_bin2hex(binPart), '0', 4);
             addr.push(hexSection);
         }
         return addr.join(':');
     };
 
-    let divideSubnet = function (addr, mask0, mask1, limit, abbr) {
+    var divideSubnet = function (addr, mask0, mask1, limit, abbr) {
         if (!_validate(addr)) {
             throw new Error('Invalid address: ' + addr);
         }
@@ -149,18 +150,18 @@
         if (mask0 < 1 || mask1 < 1 || mask0 > 128 || mask1 > 128 || mask0 > mask1) {
             throw new Error('Invalid masks.');
         }
-        let ret = [];
-        let binAddr = _addr2bin(addr);
-        let binNetPart = binAddr.substr(0, mask0);
-        let binHostPart = '0'.repeat(128 - mask1);
-        let numSubnets = Math.pow(2, mask1 - mask0);
-        for (let i = 0; i < numSubnets; ++i) {
+        var ret = [];
+        var binAddr = _addr2bin(addr);
+        var binNetPart = binAddr.substr(0, mask0);
+        var binHostPart = '0'.repeat(128 - mask1);
+        var numSubnets = Math.pow(2, mask1 - mask0);
+        for (var i = 0; i < numSubnets; ++i) {
             if (!!limit && i >= limit) {
                 break;
             }
-            let binSubnet = _leftPad(i.toString(2), '0', mask1 - mask0);
-            let binSubAddr = binNetPart + binSubnet + binHostPart;
-            let hexAddr = _bin2addr(binSubAddr);
+            var binSubnet = _leftPad(i.toString(2), '0', mask1 - mask0);
+            var binSubAddr = binNetPart + binSubnet + binHostPart;
+            var hexAddr = _bin2addr(binSubAddr);
             if (!!abbr) {
                 ret.push(abbreviate(hexAddr));
             } else {
@@ -175,7 +176,7 @@
         return ret;
     };
 
-    let range = function (addr, mask0, mask1, abbr) {
+    var range = function (addr, mask0, mask1, abbr) {
         if (!_validate(addr)) {
             throw new Error('Invalid address: ' + addr);
         }
@@ -185,11 +186,11 @@
         if (mask0 < 1 || mask1 < 1 || mask0 > 128 || mask1 > 128 || mask0 > mask1) {
             throw new Error('Invalid masks.');
         }
-        let binAddr = _addr2bin(addr);
-        let binNetPart = binAddr.substr(0, mask0);
-        let binHostPart = '0'.repeat(128 - mask1);
-        let binStartAddr = binNetPart + '0'.repeat(mask1 - mask0) + binHostPart;
-        let binEndAddr = binNetPart + '1'.repeat(mask1 - mask0) + binHostPart;
+        var binAddr = _addr2bin(addr);
+        var binNetPart = binAddr.substr(0, mask0);
+        var binHostPart = '0'.repeat(128 - mask1);
+        var binStartAddr = binNetPart + '0'.repeat(mask1 - mask0) + binHostPart;
+        var binEndAddr = binNetPart + '1'.repeat(mask1 - mask0) + binHostPart;
         if (!!abbr) {
             return {
                 start: abbreviate(_bin2addr(binStartAddr)),
@@ -205,7 +206,7 @@
         }
     };
 
-    let randomSubnet = function (addr, mask0, mask1, limit, abbr) {
+    var randomSubnet = function (addr, mask0, mask1, limit, abbr) {
         if (!_validate(addr)) {
             throw new Error('Invalid address: ' + addr);
         }
@@ -217,19 +218,19 @@
         if (mask0 < 1 || mask1 < 1 || mask0 > 128 || mask1 > 128 || mask0 > mask1) {
             throw new Error('Invalid masks.');
         }
-        let ret = [];
-        let binAddr = _addr2bin(addr);
-        let binNetPart = binAddr.substr(0, mask0);
-        let binHostPart = '0'.repeat(128 - mask1);
-        let numSubnets = Math.pow(2, mask1 - mask0);
-        for (let i = 0; i < numSubnets && i < limit; ++i) {
+        var ret = [];
+        var binAddr = _addr2bin(addr);
+        var binNetPart = binAddr.substr(0, mask0);
+        var binHostPart = '0'.repeat(128 - mask1);
+        var numSubnets = Math.pow(2, mask1 - mask0);
+        for (var i = 0; i < numSubnets && i < limit; ++i) {
             // generate an binary string with length of mask1 - mask0
-            let binSubnet = '';
-            for (let j = 0; j < mask1 - mask0; ++j) {
+            var binSubnet = '';
+            for (var j = 0; j < mask1 - mask0; ++j) {
                 binSubnet += Math.floor(Math.random() * 2);
             }
-            let binSubAddr = binNetPart + binSubnet + binHostPart;
-            let hexAddr = _bin2addr(binSubAddr);
+            var binSubAddr = binNetPart + binSubnet + binHostPart;
+            var hexAddr = _bin2addr(binSubAddr);
             if (!!abbr) {
                 ret.push(abbreviate(hexAddr));
             } else {
@@ -243,7 +244,7 @@
         return ret;
     };
 
-    let ptr = function (addr, mask) {
+    var ptr = function (addr, mask) {
         if (!_validate(addr)) {
             throw new Error('Invalid address: ' + addr);
         }
@@ -251,8 +252,8 @@
         if (mask < 1 || mask > 128 || Math.floor(mask / 4) != mask / 4) {
             throw new Error('Invalid masks.');
         }
-        let fullAddr = normalize(addr);
-        let reverse = fullAddr.replace(/:/g, '').split('').reverse();
+        var fullAddr = normalize(addr);
+        var reverse = fullAddr.replace(/:/g, '').split('').reverse();
         return reverse.slice(0, (128 - mask) / 4).join('.');
     };
 

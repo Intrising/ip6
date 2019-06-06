@@ -3,11 +3,11 @@
 (function () {
     'use strict';
 
-    let ip6 = require('./ip6.js');
-    let pjson = require('./package.json');
+    var ip6 = require('./ip6.js');
+    var pjson = require('./package.json');
 
-    let args = function () {
-        let ret = [];
+    var args = function () {
+        var ret = [];
         process.argv.forEach(function (val, index, array) {
             if (index >= 2) {
                 ret.push(val);
@@ -15,7 +15,7 @@
         });
         return ret;
     };
-    let input = args();
+    var input = args();
 
     if (input.length === 0) {
         console.log('ip6 version: ', pjson.version);
@@ -92,19 +92,19 @@
             console.error(e.message);
         }
     } else if (input.includes('-d') || input.includes('--divide')) {
-        let abbr = false;
+        var abbr = false;
         if (input.includes('-s') || input.includes('--short')) {
             abbr = true;
         }
         try {
             if (abbr) {
                 const output = ip6.divideSubnet(input[2], input[3], input[4], input[5], true);
-                for (let subnet of output) {
+                for (var subnet of output) {
                     console.log(subnet);
                 }
             } else {
                 const output = ip6.divideSubnet(input[1], input[2], input[3], input[4]);
-                for (let subnet of output) {
+                for (var subnet of output) {
                     console.log(subnet);
                 }
             }
@@ -112,19 +112,19 @@
             console.error(e.message);
         }
     } else if (input.includes('-r') || input.includes('--random')) {
-        let abbr = false;
+        var abbr = false;
         if (input.includes('-s') || input.includes('--short')) {
             abbr = true;
         }
         try {
             if (abbr) {
                 const output = ip6.randomSubnet(input[2], input[3], input[4], input[5], true);
-                for (let subnet of output) {
+                for (var subnet of output) {
                     console.log(subnet);
                 }
             } else {
                 const output = ip6.randomSubnet(input[1], input[2], input[3], input[4]);
-                for (let subnet of output) {
+                for (var subnet of output) {
                     console.log(subnet);
                 }
             }
@@ -132,7 +132,7 @@
             console.error(e.message);
         }
     } else if (input.includes('-R') || input.includes('--range')) {
-        let abbr = false;
+        var abbr = false;
         if (input.includes('-s') || input.includes('--short')) {
             abbr = true;
         }

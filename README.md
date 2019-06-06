@@ -11,7 +11,7 @@ IPv6 address helper utilities.
 ## Module Usage
 ### To `normalize` IPv6 addresses
 ```javascript
-let ip6 = require('ip6');
+var ip6 = require('ip6');
 
 console.log(ip6.normalize('2404:6800:4003:808::200e'));
 // 2404:6800:4003:0808:0000:0000:0000:200e
@@ -50,7 +50,7 @@ console.log(ip6.abbreviate('2001:0001:0002:0003:0004:0005:0006:0007'));
 
 ### To divide a `/64` subnet into 4 `/66` subnets
 ```javascript
-let subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 66);
+var subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 66);
 console.log(subnets);
 /*
 outputs:
@@ -63,7 +63,7 @@ outputs:
 
 ### To divide a `/64` subnet into `/128` subnets, but limit to 8 addresses
 ```javascript
-let subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 128, 8);
+var subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 128, 8);
 console.log(subnets);
 /*
 [ '2607:5300:0060:1234:0000:0000:0000:0000',
@@ -79,7 +79,7 @@ console.log(subnets);
 
 ### To divide a `/64` subnet into `/128` subnets, but limit to 8 abbreviated addresses
 ```javascript
-let subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 128, 8, true);
+var subnets = ip6.divideSubnet("2607:5300:60:1234::", 64, 128, 8, true);
 console.log(subnets);
 /*
 [ '2607:5300:60:1234::',
@@ -95,7 +95,7 @@ console.log(subnets);
 
 ### To generate 5 random `/128` from a `/48` (output in abbreviated mode):
 ```javascript
-let r = ip6.randomSubnet("2607:5300:60::", 48, 128, 5, true);
+var r = ip6.randomSubnet("2607:5300:60::", 48, 128, 5, true);
 console.log(r);
 /*
 [ '2607:5300:60:ba28:1acc:11ef:23a:770',
@@ -108,7 +108,7 @@ console.log(r);
 
 ### To calculate the range and size of a `/64` subnet:
 ```javascript
-let range = ip6.range("2607:5300:60:1234::", 64, 128);
+var range = ip6.range("2607:5300:60:1234::", 64, 128);
 console.log(range);
 /*
 { start: '2607:5300:0060:1234:0000:0000:0000:0000',
@@ -119,7 +119,7 @@ console.log(range);
 
 ### To calculate the range and size of a `/48` subnet divided into /56 subnets (output in abbreviated mode):
 ```javascript
-let range = ip6.range("2607:5300:60::", 48, 56, true);
+var range = ip6.range("2607:5300:60::", 48, 56, true);
 console.log(range);
 /*
 { start: '2607:5300:60::',
@@ -130,7 +130,7 @@ console.log(range);
 
 ### To generate a PTR record for DNS zone file:
 ```javascript
-let ptr = ip6.ptr("2607:5300:60:1234:cafe:babe:dead:beef", 64);
+var ptr = ip6.ptr("2607:5300:60:1234:cafe:babe:dead:beef", 64);
 console.log(ptr);
 // f.e.e.b.d.a.e.d.e.b.a.b.e.f.a.c
 ```
