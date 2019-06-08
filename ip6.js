@@ -123,7 +123,8 @@
         var nAddr = normalize(addr);
         var sections = nAddr.split(":");
         var binAddr = '';
-        for (var section in sections) {
+        for (var index in sections) {
+            var section = sections[index];
             binAddr += _leftPad(_hex2bin(section), '0', 16);
         }
         return binAddr;
@@ -188,9 +189,25 @@
         }
         var binAddr = _addr2bin(addr);
         var binNetPart = binAddr.substr(0, mask0);
-        var binHostPart = '0'.repeat(128 - mask1);
-        var binStartAddr = binNetPart + '0'.repeat(mask1 - mask0) + binHostPart;
-        var binEndAddr = binNetPart + '1'.repeat(mask1 - mask0) + binHostPart;
+
+        var paddingHostPart="";
+        for (var i = 0; i < (128 - mask1); i++) {
+            paddingHostPart+='0';
+        }
+        
+        var binHostPart = paddingHostPart;
+        
+        var paddingStart="";
+        for (var i = 0; i < (mask1 - mask0); i++) {
+            paddingStart+='0';
+        }
+        var binStartAddr = binNetPart + paddingStart + binHostPart;
+        
+        var paddingEnd="";
+        for (var i = 0; i < (mask1 - mask0); i++) {
+            paddingEnd+='1';
+        }
+        var binEndAddr = binNetPart + paddingEnd + binHostPart;
         if (!!abbr) {
             return {
                 start: abbreviate(_bin2addr(binStartAddr)),
